@@ -10,9 +10,14 @@ from __future__ import annotations
 
 import socket
 from contextlib import asynccontextmanager
-#기존 from zeroconf import ServiceInfo, Zeroconf
-from zeroconf import ServiceInfo
-from zeroconf.asyncio import AsyncZeroconf
+
+try:
+    from zeroconf import ServiceInfo
+    from zeroconf.asyncio import AsyncZeroconf
+
+    HAS_ZEROCONF = True
+except ImportError:  # requirements 설치 전에도 서버는 기동되도록
+    HAS_ZEROCONF = False
 import os
 import re
 from pathlib import Path
@@ -26,6 +31,8 @@ from starlette.responses import FileResponse, HTMLResponse
 from starlette.routing import Route
 
 load_dotenv()
+
+_DEFAULT_CHAT_PORT = int(os.getenv("CHAT_PORT", "8000"))
 
 ROOM_PATTERN = re.compile(r"^[a-zA-Z0-9:_\-]{1,128}$")
 
@@ -207,6 +214,9 @@ def get_local_ip() -> str:
 @asynccontextmanager
 async def app_lifespan(app: Starlette):
     """서버가 켜지고 꺼질 때 mDNS 방송을 관리합니다 (비동기 방식)."""
+    if not HAS_ZEROCONF:
+        yield
+        return
     # 일반 Zeroconf 대신 비동기용 AsyncZeroconf 사용
     aio_zc = AsyncZeroconf()
     ip = get_local_ip()
@@ -215,15 +225,17 @@ async def app_lifespan(app: Starlette):
         "_http._tcp.local.",
         "ChatApp._http._tcp.local.",
         addresses=[socket.inet_aton(ip)],
-        port=8000,
+        port=_DEFAULT_CHAT_PORT,
         server="chatserver.local.",
     )
     
     # 비동기(await)로 서비스 등록 (서버 멈춤 방지)
     await aio_zc.async_register_service(info)
     print("=" * 50)
-    print(f"🚀 mDNS 방송 시작! 같은 와이파이 기기에서 아래 주소로 접속하세요:")
-    print(f"👉 http://chatserver.local:8000")
+    print(
+        "[mDNS] Service registered. Same LAN devices may use: "
+        f"http://chatserver.local:{_DEFAULT_CHAT_PORT}"
+    )
     print("=" * 50)
     
     yield  # 서버 실행 구간
@@ -285,6 +297,6 @@ if __name__ == "__main__":
     import uvicorn
 
     _host = os.getenv("CHAT_HOST", "0.0.0.0")
-    _port = int(os.getenv("CHAT_PORT", "8000"))
+    _port = _DEFAULT_CHAT_PORT
     _reload = os.getenv("CHAT_RELOAD", "").lower() in ("1", "true", "yes")
     uvicorn.run("chat_server:app", host=_host, port=_port, reload=_reload)

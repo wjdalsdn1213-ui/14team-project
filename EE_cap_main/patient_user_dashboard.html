@@ -220,6 +220,35 @@
       background: #00427f;
     }
 
+    .chat-action {
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .chat-open-btn {
+      width: 100%;
+      max-width: 360px;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: #0d9488;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(13, 148, 136, 0.25);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+    }
+
+    .chat-open-btn:hover {
+      background: #0f766e;
+      box-shadow: 0 10px 22px rgba(15, 118, 110, 0.28);
+    }
+
+    .chat-open-btn:active {
+      transform: translateY(1px);
+    }
+
     .pain-message {
       margin-top: 8px;
       font-size: 0.9rem;
@@ -398,6 +427,10 @@
   <main class="container">
     <h1>환자용 대시보드</h1>
     <p id="subText">김환자님의 운동 안내</p>
+
+    <div class="chat-action">
+      <button type="button" id="patientChatBtn" class="chat-open-btn">1:1 채팅</button>
+    </div>
 
     <section class="patient-top" aria-label="환자 정보">
       <img
@@ -1209,6 +1242,17 @@
     });
 
     syncAnalyzeButtonLabel();
+
+    (function initChatButton() {
+      var CHAT_SERVER = "http://127.0.0.1:8000";
+      var CHAT_ROOM = "ee:cap:main";
+      document.getElementById("patientChatBtn").addEventListener("click", function () {
+        var u = new URL("/preview/patient", CHAT_SERVER);
+        u.searchParams.set("room", CHAT_ROOM);
+        u.searchParams.set("user", "patient-1");
+        window.open(u.toString(), "_blank", "noopener,noreferrer");
+      });
+    })();
   </script>
 </body>
 </html>

@@ -10,6 +10,8 @@
 
     socket.on("connect", () => {
       socket.emit("identify", { user_id: userId, role: "patient" });
+    });
+    socket.on("identified", () => {
       socket.emit("join_room", { room_id: roomId });
     });
 

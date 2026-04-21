@@ -208,12 +208,45 @@
       background: #f9fafb;
       color: #374151;
     }
+
+    .chat-action {
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .chat-open-btn {
+      width: 100%;
+      max-width: 360px;
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: var(--secondary);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(15, 118, 110, 0.25);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+    }
+
+    .chat-open-btn:hover {
+      background: var(--secondary-hover);
+      box-shadow: 0 10px 22px rgba(13, 95, 89, 0.28);
+    }
+
+    .chat-open-btn:active {
+      transform: translateY(1px);
+    }
   </style>
 </head>
 <body>
   <main class="container">
     <h1>대시보드</h1>
     <p>김환자의 선택 운동과 횟수를 확인할 수 있습니다.</p>
+
+    <div class="chat-action">
+      <button type="button" id="patientChatBtn" class="chat-open-btn">1:1 채팅</button>
+    </div>
 
     <section class="patient-top" aria-label="환자 정보">
       <img
@@ -376,6 +409,17 @@
       sendBtn.textContent = "보내기";
       window.location.reload();
     });
+
+    (function initChatButton() {
+      var CHAT_SERVER = "http://127.0.0.1:8000";
+      var CHAT_ROOM = "ee:cap:main";
+      document.getElementById("patientChatBtn").addEventListener("click", function () {
+        var u = new URL("/preview/patient", CHAT_SERVER);
+        u.searchParams.set("room", CHAT_ROOM);
+        u.searchParams.set("user", "patient-1");
+        window.open(u.toString(), "_blank", "noopener,noreferrer");
+      });
+    })();
 
     sendBtn.addEventListener("click", function () {
       if (!storedExercises.length) {

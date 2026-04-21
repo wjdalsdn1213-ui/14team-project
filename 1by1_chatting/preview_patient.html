@@ -150,8 +150,7 @@
       st.textContent = "연결됨";
       st.className = "status ok";
       socket.emit("identify", { user_id: USER_ID, role: "patient" });
-      socket.emit("join_room", { room_id: ROOM_ID });
-      appendLog("· 방 입장: " + ROOM_ID, "meta");
+      appendLog("· 본인 확인 요청…", "meta");
     });
 
     socket.on("disconnect", function () {
@@ -159,13 +158,17 @@
       st.className = "status err";
     });
 
-    socket.on("connect_error", function () {
+    socket.on("connect_error", function (err) {
       st.textContent = "연결 실패";
       st.className = "status err";
+      var detail = err && err.message ? err.message : String(err || "");
+      appendLog("· 연결 오류: " + (detail || "서버가 꺼져 있거나 주소가 잘못됐을 수 있습니다."), "meta");
     });
 
     socket.on("identified", function (p) {
       appendLog("· 본인 확인: " + p.user_id + " (" + p.role + ")", "meta");
+      socket.emit("join_room", { room_id: ROOM_ID });
+      appendLog("· 방 입장: " + ROOM_ID, "meta");
     });
 
     socket.on("joined", function (p) {
