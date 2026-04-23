@@ -416,11 +416,17 @@
     (function initChatButton() {
       var CHAT_SERVER = "http://127.0.0.1:8000";
       var CHAT_ROOM = "ee:cap:main";
+
+      function buildPatientPreviewUrl() {
+        var basePreview = new URL("../1by1_chatting/preview_patient.html", window.location.href);
+        basePreview.searchParams.set("room", CHAT_ROOM);
+        basePreview.searchParams.set("user", "patient-1");
+        basePreview.searchParams.set("server", CHAT_SERVER);
+        return basePreview.toString();
+      }
+
       document.getElementById("patientChatBtn").addEventListener("click", function () {
-        var u = new URL("/preview/patient", CHAT_SERVER);
-        u.searchParams.set("room", CHAT_ROOM);
-        u.searchParams.set("user", "patient-1");
-        window.open(u.toString(), "_blank", "noopener,noreferrer");
+        window.open(buildPatientPreviewUrl(), "_blank", "noopener,noreferrer");
       });
     })();
 
