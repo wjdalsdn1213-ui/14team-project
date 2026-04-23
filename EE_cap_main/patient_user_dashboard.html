@@ -348,6 +348,23 @@
       grid-column: 1 / -1;
     }
 
+    .map-tool-section {
+      margin-top: 0;
+      border: 1px solid #e5e7eb;
+      border-radius: 0;
+      background: #ffffff;
+      padding: 14px;
+      grid-column: 1 / -1;
+    }
+
+    .map-tool-frame {
+      width: 100%;
+      min-height: 440px;
+      border: 1px solid #d1d5db;
+      border-radius: 0;
+      background: #ffffff;
+    }
+
     .mp-disclaimer {
       font-size: 0.82rem;
       color: #6b7280;
@@ -604,6 +621,16 @@
           <span id="mpStatus">영상을 선택한 뒤 분석을 눌러 주세요.</span>
         </div>
         <div id="mpResult"></div>
+      </div>
+      <div class="map-tool-section" aria-label="Google 지도 도구">
+        <h2>재활 병원 위치 확인 (Google Map)</h2>
+        <iframe
+          class="map-tool-frame"
+          src="./tool/google_map.html"
+          title="Google Map Tool"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
       </div>
     </section>
     <div class="chat-action">
