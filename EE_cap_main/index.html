@@ -319,25 +319,19 @@
       therapistMessage.className = "message";
     }
 
-    function openPatientLoginPanel() {
+    patientStartBtn.addEventListener("click", function () {
       resetMessages();
       patientPanel.classList.add("active");
       therapistPanel.classList.remove("active");
       patientNameInput.focus();
-    }
+    });
 
-    function openTherapistLoginPanel() {
+    therapistStartBtn.addEventListener("click", function () {
       resetMessages();
       therapistPanel.classList.add("active");
       patientPanel.classList.remove("active");
       therapistIdInput.focus();
-    }
-
-    patientStartBtn.addEventListener("click", openPatientLoginPanel);
-    therapistStartBtn.addEventListener("click", openTherapistLoginPanel);
-
-    // 첫 진입 시 바로 로그인 폼이 보이도록 기본 화면을 설정
-    openTherapistLoginPanel();
+    });
 
     patientSubmitBtn.addEventListener("click", function () {
       // 환자 로그인 성공 시 환자 대시보드로 이동
